@@ -1,12 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Databases</title>
-</head>
-<body>
-  <h1>Databases (Firebase)</h1>
-  <script src="app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <title>Databases</title>
+  </head>
+  <body>
+    <div class="container my-5">
+      <h2>Recipes</h2>
+      <ul></ul>
+      <form action="">
+        <label for="recipe">Add a new recipe:</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="recipe" required />
+          <div class="input-group-append">
+            <input
+              type="submit"
+              value="add"
+              class="btn btn-outline-secondary"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-firestore.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: 'AIzaSyBftHSMFwjptffTowCs8OvoS6TIU7rVtKY',
+        authDomain: 'ninja-modern-js-562c6.firebaseapp.com',
+        databaseURL: 'https://ninja-modern-js-562c6.firebaseio.com',
+        projectId: 'ninja-modern-js-562c6',
+        storageBucket: 'ninja-modern-js-562c6.appspot.com',
+        messagingSenderId: '899745325289',
+        appId: '1:899745325289:web:8c11bf860c8bdf82dad078'
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      // initialize the firestore connection and store it in db
+      const db = firebase.firestore();
+    </script>
+    <script src="app.js"></script>
+  </body>
 </html>
