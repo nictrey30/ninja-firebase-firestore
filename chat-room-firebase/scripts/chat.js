@@ -42,6 +42,7 @@ class Chatroom {
   // update the username
   updateName(username) {
     this.username = username;
+    localStorage.setItem('username', username);
   }
   updateRoom(room) {
     // unsubscribe from the real-time listener, because it is currently listening to the old room
@@ -52,18 +53,3 @@ class Chatroom {
     }
   }
 }
-
-const chatroom = new Chatroom('general', 'cucu');
-
-// chatroom.addChat('miruna is here boys');
-chatroom.getChats((data) => {
-  console.log(data);
-});
-
-setTimeout(() => {
-  chatroom.updateRoom('gaming');
-  chatroom.getChats((data) => {
-    console.log(data);
-  });
-  chatroom.addChat('cucu likes wow');
-}, 3000);
