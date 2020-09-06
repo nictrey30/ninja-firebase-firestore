@@ -61,6 +61,17 @@ li div {
   font-weight: bold;
   cursor: pointer;
 }
+li div.edit-button {
+  position: absolute;
+  top: 0;
+  right: 50px;
+  background: rgba(255, 255, 255, 0.6);
+  width: 40px;
+  text-align: center;
+  padding: 10px 0;
+  font-weight: bold;
+  cursor: pointer;
+}
 
 form input {
   float: left;

@@ -6,18 +6,23 @@ const form = document.querySelector('#add-cafe-form');
 const rendercafe = (doc) => {
   let li = document.createElement('li');
   let name = document.createElement('span');
+  name.classList.add('name');
   let city = document.createElement('span');
   let cross = document.createElement('div');
+  let editButton = document.createElement('div');
+  editButton.classList.add('edit-button');
 
   li.setAttribute('data-id', doc.id);
 
   name.textContent = doc.data().name;
   city.textContent = doc.data().city;
   cross.textContent = 'x';
+  editButton.innerHTML = "<i class='far fa-edit'></i>";
 
   li.appendChild(name);
   li.appendChild(city);
   li.appendChild(cross);
+  li.appendChild(editButton);
   cafeList.appendChild(li);
 };
 
@@ -47,6 +52,13 @@ db.collection('cafes')
           li.remove();
           console.log('li removed');
           break;
+        case 'modified':
+          let liUpdated = cafeList.querySelector(`[data-id=${change.doc.id}]`);
+          liUpdated.querySelector(
+            'span.name'
+          ).textContent = change.doc.data().name;
+          // console.log(change.doc.data().name);
+          break;
       }
     });
   });
@@ -63,8 +75,16 @@ form.addEventListener('submit', (e) => {
   form.reset();
 });
 
+// get the value of edit
+const getValue = () => {
+  let val = prompt("Enter the new cafe's name: ");
+  console.log(val);
+  return val;
+};
+
 // deleting data
 cafeList.addEventListener('click', (e) => {
+  console.log(e.target.tagName);
   // get the div where the x is
   if (e.target.tagName === 'DIV') {
     // console.log(e.target.parentElement.dataset.id);
@@ -72,6 +92,15 @@ cafeList.addEventListener('click', (e) => {
       .doc(e.target.parentElement.dataset.id)
       .delete()
       .then(console.log('document deleted'))
+      .catch((err) => console.log(err));
+  } else if (e.target.tagName === 'I') {
+    // console.log(e.target.parentElement.parentElement);
+    db.collection('cafes')
+      .doc(e.target.parentElement.parentElement.dataset.id)
+      .update({
+        name: getValue()
+      })
+      .then(() => console.log('name updated'))
       .catch((err) => console.log(err));
   }
 });
