@@ -3,7 +3,6 @@ const loggedOutLinks = document.querySelectorAll('.logged-out');
 const loggedInLinks = document.querySelectorAll('.logged-in');
 
 // conditional menu links
-
 const setupUI = (user) => {
   // user logged in -> menus: account, logout, create guide
   // user logged out -> menus: login, signup

@@ -3,16 +3,46 @@ auth.onAuthStateChanged((user) => {
   // if the user logged in we will see the user, if the user logged out the value will be null
   if (user) {
     // get data
-    db.collection('guides')
-      .get()
-      .then((snapshot) => {
-        setupGuides(snapshot.docs);
-        setupUI(user);
-      });
+    db.collection('guides').onSnapshot((snapshot) => {
+      setupGuides(snapshot.docs);
+      // toggles the conditional nav links if the user is logged in or not
+      setupUI(user);
+    });
   } else {
     setupGuides([]);
     setupUI();
   }
+});
+
+// async method for adding a guide
+const addGuide = async (title, content) => {
+  // construct a guide object
+  const guide = {
+    title,
+    content
+  };
+  // save the guide document
+  const response = await db.collection('guides').add(guide);
+  return response;
+};
+
+// create new guide
+const createForm = document.querySelector('#create-form');
+createForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const title = createForm.title.value;
+  const content = createForm.content.value;
+  addGuide(title, content)
+    .then((response) => {
+      console.log(response, ' ', 'guide added');
+      // close the signup modal & reset form
+      const modal = document.querySelector('#modal-create');
+      M.Modal.getInstance(modal).close();
+      createForm.reset();
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
 });
 
 // signup
