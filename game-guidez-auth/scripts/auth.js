@@ -1,13 +1,17 @@
 // listen for auth status changes
 auth.onAuthStateChanged((user) => {
+  // console.log(user);
   // if the user logged in we will see the user, if the user logged out the value will be null
   if (user) {
     // get data
-    db.collection('guides').onSnapshot((snapshot) => {
-      setupGuides(snapshot.docs);
-      // toggles the conditional nav links if the user is logged in or not
-      setupUI(user);
-    });
+    db.collection('guides').onSnapshot(
+      (snapshot) => {
+        setupGuides(snapshot.docs);
+        // toggles the conditional nav links if the user is logged in or not
+        setupUI(user);
+      },
+      (err) => console.log(err.message)
+    );
   } else {
     setupGuides([]);
     setupUI();
@@ -57,10 +61,18 @@ signupForm.addEventListener('submit', (e) => {
   auth
     .createUserWithEmailAndPassword(email, password)
     .then((userCredentials) => {
-      // close the signup modal & reset form
-      const modal = document.querySelector('#modal-signup');
-      M.Modal.getInstance(modal).close();
-      signupForm.reset();
+      return db
+        .collection('users')
+        .doc(userCredentials.user.uid)
+        .set({
+          bio: signupForm['signup-bio'].value
+        })
+        .then(() => {
+          // close the signup modal & reset form
+          const modal = document.querySelector('#modal-signup');
+          M.Modal.getInstance(modal).close();
+          signupForm.reset();
+        });
     });
 });
 
