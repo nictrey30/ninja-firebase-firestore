@@ -1,14 +1,32 @@
+// add admin cloud function
+const adminForm = document.querySelector('.admin-actions');
+adminForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const adminEmail = adminForm['admin-email'].value;
+  // call the cloud function
+  // make a reference to the cloud function
+  const addAdminRole = functions.httpsCallable('addAdminRole');
+  // { email: adminEmail } represents the data we take as a param in the cloud function
+  addAdminRole({ email: adminEmail }).then((result) => {
+    console.log(result);
+  });
+});
+
 // listen for auth status changes
 auth.onAuthStateChanged((user) => {
   // console.log(user);
   // if the user logged in we will see the user, if the user logged out the value will be null
   if (user) {
+    user.getIdTokenResult().then((idTokenResult) => {
+      // attach the admin claim to the current user while they are logged in in the application
+      user.admin = idTokenResult.claims.admin;
+      setupUI(user);
+    });
     // get data
     db.collection('guides').onSnapshot(
       (snapshot) => {
         setupGuides(snapshot.docs);
         // toggles the conditional nav links if the user is logged in or not
-        setupUI(user);
       },
       (err) => console.log(err.message)
     );
@@ -74,6 +92,11 @@ signupForm.addEventListener('submit', (e) => {
             const modal = document.querySelector('#modal-signup');
             M.Modal.getInstance(modal).close();
             signupForm.reset();
+            // reset the error p tag if the error corrected
+            signupForm.querySelector('.error').innerHTML = '';
+          })
+          .catch((err) => {
+            signupForm.querySelector('.error').innerHTML = err.message;
           })
       );
     });
@@ -103,8 +126,11 @@ loginForm.addEventListener('submit', (e) => {
       const modal = document.querySelector('#modal-login');
       M.Modal.getInstance(modal).close();
       loginForm.reset();
+      loginForm.querySelector('.error').innerHTML = '';
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      loginForm.querySelector('.error').innerHTML = err.message;
+    });
 });
 
 // when we want to restrict our data to only authenticated users we actually also have to restrict that data on the firestore database itself using security rules

@@ -2,21 +2,25 @@ const guideList = document.querySelector('.guides');
 const loggedOutLinks = document.querySelectorAll('.logged-out');
 const loggedInLinks = document.querySelectorAll('.logged-in');
 const accountDetails = document.querySelector('.account-details');
-
+const adminItems = document.querySelectorAll('.admin');
 // conditional menu links
 const setupUI = (user) => {
   // user logged in -> menus: account, logout, create guide
   // user logged out -> menus: login, signup
   if (user) {
     // if user exists, display the account info - email
+    if (user.admin) {
+      adminItems.forEach((item) => (item.style.display = 'block'));
+    }
     db.collection('users')
       .doc(user.uid)
       .get()
       .then((doc) => {
         const html = `
-        <div>Logged in as ${user.email}</div>
-        <div>Bio: ${doc.data().bio}</div>
-      `;
+          <div>Logged in as ${user.email}</div>
+          <div>Bio: ${doc.data().bio}</div>
+          <div class="pink-text">${user.admin ? 'you are an admin' : ''}</div>
+        `;
         accountDetails.innerHTML = html;
       });
 
@@ -29,6 +33,7 @@ const setupUI = (user) => {
     // toggle UI elements
     loggedInLinks.forEach((item) => (item.style.display = 'none'));
     loggedOutLinks.forEach((item) => (item.style.display = 'block'));
+    adminItems.forEach((item) => (item.style.display = 'none'));
   }
 };
 
