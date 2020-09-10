@@ -61,18 +61,21 @@ signupForm.addEventListener('submit', (e) => {
   auth
     .createUserWithEmailAndPassword(email, password)
     .then((userCredentials) => {
-      return db
-        .collection('users')
-        .doc(userCredentials.user.uid)
-        .set({
-          bio: signupForm['signup-bio'].value
-        })
-        .then(() => {
-          // close the signup modal & reset form
-          const modal = document.querySelector('#modal-signup');
-          M.Modal.getInstance(modal).close();
-          signupForm.reset();
-        });
+      return (
+        db
+          .collection('users')
+          // create a new document in 'users' collection with the id that we receive from the credential
+          .doc(userCredentials.user.uid)
+          .set({
+            bio: signupForm['signup-bio'].value
+          })
+          .then(() => {
+            // close the signup modal & reset form
+            const modal = document.querySelector('#modal-signup');
+            M.Modal.getInstance(modal).close();
+            signupForm.reset();
+          })
+      );
     });
 });
 
